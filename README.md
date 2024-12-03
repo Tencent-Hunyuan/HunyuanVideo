@@ -100,7 +100,7 @@ overall model performance.
 ### **MLLM Text Encoder**
 Some previous text-to-video model typically use pretrained CLIP and T5-XXL as text encoders where CLIP uses Transformer Encoder and T5 uses a Encoder-Decoder structure. In constrast, we utilize a pretrained Multimodal Large Language Model (MLLM) with a Decoder-Only structure as our text encoder, which has following advantages: (i) Compared with T5, MLLM after visual instruction finetuning has better image-text alignment in the feature space, which alleviates the difficulty of instruction following in diffusion models; (ii)
 Compared with CLIP, MLLM has been demonstrated superior ability in image detail description
-and complex reasoning; (iii) MLLM can play as a zero-shot learner by following system instructions prepended to user prompts, helping text features pay more attention to key information. In addition, MLLM is based on causal attention while T5-XXL utilizes bidirectional attention that produces better text guidance for diffusion models. Therefore, we introduce an extra bidirectional token refiner for enhacing text features.
+and complex reasoning; (iii) MLLM can play as a zero-shot learner by following system instructions prepended to user prompts, helping text features pay more attention to key information. In addition, MLLM is based on causal attention while T5-XXL utilizes bidirectional attention that produces better text guidance for diffusion models. Therefore, we introduce an extra bidirectional token refiner for enhancing text features.
 <p align="center">
   <img src="assets/text_encoder.png"  height=275>
 </p>
