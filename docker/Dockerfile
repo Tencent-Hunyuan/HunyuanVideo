@@ -14,8 +14,8 @@ RUN pip3 install --no-cache-dir torch==2.1.1+cu118 -f https://download.pytorch.o
 RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # Install flash_attn
-RUN pip3 install --no-cache-dir flash-attn
 RUN python3 -m pip install ninja
+RUN pip3 install --no-cache-dir flash-attn
 
 # Set working directory
 WORKDIR /workspace
