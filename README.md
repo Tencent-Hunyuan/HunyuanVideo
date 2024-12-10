@@ -51,7 +51,7 @@ The video is heavily compressed due to compliance of GitHub policy. The high qua
   - [ ] Penguin Video Benchmark
   - [ ] ComfyUI
   - [ ] Diffusers 
-  - [ ] Multi-gpus PipeFusion inference (Low memory requirmenets)
+  - [ ] Multi-gpus PipeFusion inference (Low memory requirements)
 - HunyuanVideo (Image-to-Video Model)
   - [ ] Inference 
   - [ ] Checkpoints 
