@@ -59,7 +59,7 @@ HunyuanVideo uses an MLLM model and a CLIP model as text encoder.
 
 1. MLLM model (text_encoder folder)
 
-HunyuanVideo supports different MLLMs (including HunyuanMLLM and open-source MLLM models). At this stage, we have not yet released HunyuanMLLM. We recommend the user in community to use [llava-llama-3-8b](https://huggingface.co/xtuner/llava-llama-3-8b-v1_1-transformers) provided by [Xtuer](https://huggingface.co/xtuner), which can be downloaded by the following command
+HunyuanVideo supports different MLLMs (including HunyuanMLLM and open-source MLLM models). At this stage, we have not yet released HunyuanMLLM. We recommend the user in community to use [llava-llama-3-8b](https://huggingface.co/xtuner/llava-llama-3-8b-v1_1-transformers) provided by [Xtuner](https://huggingface.co/xtuner), which can be downloaded by the following command
 
 ```shell
 cd HunyuanVideo/ckpts
