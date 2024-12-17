@@ -302,9 +302,10 @@ To run the Gradio Server on Google Colab, follow the steps described in the Down
 !python -m pip install ninja
 !python -m pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.3
 !pip install gradio
+!pip install loguru
 
 # start
-python3 gradio_server.py --flow-reverse --share
+!python3 gradio_server.py --flow-reverse --share
 ```
 
 This will provide you with a shareable link to the Gradio interface for generating videos from text prompts in the Colab environment.
