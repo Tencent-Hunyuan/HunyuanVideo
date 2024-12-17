@@ -137,14 +137,15 @@ if __name__ == "__main__":
     server_name = os.getenv("SERVER_NAME", "0.0.0.0")
     server_port = int(os.getenv("SERVER_PORT", "8081"))
 
+    # Check if --share is specified in command line arguments without changing hyvideo/config.py
+    if "--share" in sys.argv:
+        sys.argv.remove("--share")
+        share_flag = True
+    else:
+        share_flag = False
+
     args = parse_args()
     print(args)
 
-    # Check if --share is specified in command line arguments without changing hyvideo/config.py
-    if "--share" in sys.argv:
-        setattr(args, 'share', True)
-    else:
-        setattr(args, 'share', False)
-
     demo = create_demo(args.model_base, args.save_path)
-    demo.launch(server_name=server_name, server_port=server_port, share=args.share)
+    demo.launch(server_name=server_name, server_port=server_port, share=share_flag)
