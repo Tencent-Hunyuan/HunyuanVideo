@@ -300,7 +300,10 @@ To run the Gradio Server on Google Colab, follow the steps described in the Down
 !huggingface-cli download openai/clip-vit-large-patch14 --local-dir ./ckpts/text_encoder_2
 !pip install -r requirements.txt
 !python -m pip install ninja
-!python -m pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.3
+# Download and install pre-built flash-attention binaries
+# For details, see: https://github.com/kun432/flash-attention-prebuild-wheels
+!wget https://github.com/kun432/flash-attention-prebuild-wheels/releases/download/v0.0.0-test/flash_attn-2.6.3+cu121torch2.5-cp310-cp310-linux_x86_64.whl
+!pip install --no-dependencies --upgrade flash_attn-2.6.3+cu121torch2.5-cp310-cp310-linux_x86_64.whl
 !pip install gradio
 !pip install loguru
 
