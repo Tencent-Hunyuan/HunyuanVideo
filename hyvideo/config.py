@@ -375,7 +375,7 @@ def add_parallel_args(parser: argparse.ArgumentParser):
         "--ring-degree",
         type=int,
         default=1,
-        help="ring degree.",
+        help="Ring degree.",
     )
 
     return parser
