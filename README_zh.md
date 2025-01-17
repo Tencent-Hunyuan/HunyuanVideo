@@ -366,7 +366,7 @@ python3 gradio_server.py --flow-reverse
 ```bash
 cd HunyuanVideo
 
-torchrun --nproc_per_node=8 sample_video_parallel.py \
+torchrun --nproc_per_node=8 sample_video.py \
     --video-size 1280 720 \
     --video-length 129 \
     --infer-steps 50 \
