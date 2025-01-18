@@ -28,7 +28,7 @@
 
 
 <p align="center">
-    👋 加入我们的 <a href="assets/WECHAT.md" target="_blank">WeChat</a> 和 <a href="https://discord.gg/GpARqvrh" target="_blank">Discord</a> 
+    👋 加入我们的 <a href="assets/WECHAT.md" target="_blank">WeChat</a> 和 <a href="https://discord.gg/WrurN5JXcm" target="_blank">Discord</a> 
 </p>
 
 
@@ -73,6 +73,8 @@
 - Enhance-A-Video (生成更高质量的视频): [Enhance-A-Video](https://github.com/NUS-HPC-AI-Lab/Enhance-A-Video) by [NUS-HPC-AI-Lab](https://ai.comp.nus.edu.sg/)
 
 - TeaCache (基于缓存的加速采样): [TeaCache](https://github.com/LiewFeng/TeaCache) by [Feng Liu](https://github.com/LiewFeng)
+
+- HunyuanVideoGP (针对低性能GPU的版本): [HunyuanVideoGP](https://github.com/deepbeepmeep/HunyuanVideoGP) by [DeepBeepMeep](https://github.com/deepbeepmeep)
 
 
 
