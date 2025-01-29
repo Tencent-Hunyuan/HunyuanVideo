@@ -38,15 +38,12 @@ def benchmark_mask_generation(n_frame: int, n_hw: int, batch_size: int = 1):
     dtype = torch.bfloat16
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-    print(f"Benchmarking {n_frame}x{n_hw}x{batch_size}")
     t_orig = run_benchmark(
         fun=lambda: prepare_causal_attention_mask_original(n_frame, n_hw, dtype, device, batch_size)
     )
-    print(f"Original mask generation time: {t_orig:.4f}s")
     t_new = run_benchmark(
         fun=lambda: prepare_causal_attention_mask(n_frame, n_hw, dtype, device, batch_size)
     )
-    print(f"New mask generation time: {t_new:.4f}s")
 
     print(f"Original mask generation time: {t_orig:.4f}s")
     print(f"New mask generation time: {t_new:.4f}s")
