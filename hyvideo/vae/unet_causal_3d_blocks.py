@@ -34,12 +34,14 @@ from diffusers.models.normalization import RMSNorm
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 
-def prepare_causal_attention_mask(n_frame: int, n_hw: int, dtype, device, batch_size: int = None):
-    seq_len = n_frame * n_hw
-    mask = torch.full((seq_len, seq_len), float("-inf"), dtype=dtype, device=device)
-    for i in range(seq_len):
-        i_frame = i // n_hw
-        mask[i, : (i_frame + 1) * n_hw] = 0
+def prepare_causal_attention_mask(
+    n_frame: int, n_hw: int, dtype, device, batch_size: int | None = None
+):
+    indices = torch.arange(1, n_frame + 1, dtype=torch.int32, device=device)
+    indices_blocks = indices.repeat_interleave(n_hw)
+    x, y = torch.meshgrid(indices_blocks, indices_blocks, indexing="xy")
+    mask = torch.where(x <= y, 0, -float("inf")).to(dtype=dtype)
+
     if batch_size is not None:
         mask = mask.unsqueeze(0).expand(batch_size, -1, -1)
     return mask
