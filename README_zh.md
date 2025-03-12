@@ -369,15 +369,15 @@ python3 gradio_server.py --flow-reverse
 ```bash
 cd HunyuanVideo
 
-torchrun --nproc_per_node=8 sample_video_parallel.py \
+torchrun --nproc_per_node=8 sample_video.py \
     --video-size 1280 720 \
     --video-length 129 \
     --infer-steps 50 \
     --prompt "A cat walks on the grass, realistic style." \
     --flow-reverse \
     --seed 42 \
-    --ulysses_degree 8 \
-    --ring_degree 1 \
+    --ulysses-degree 8 \
+    --ring-degree 1 \
     --save-path ./results
 ```
 
