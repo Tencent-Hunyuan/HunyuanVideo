@@ -1,6 +1,6 @@
 <!-- ## **HunyuanVideo** -->
 
-[中文阅读](./README_zh.md)
+[中文阅读](./README_zh.md) | [日本語](./README_ja.md)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Tencent/HunyuanVideo/refs/heads/main/assets/logo.png"  height=100>
