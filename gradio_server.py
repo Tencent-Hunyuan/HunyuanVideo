@@ -11,6 +11,9 @@ from hyvideo.config import parse_args
 from hyvideo.inference import HunyuanVideoSampler
 from hyvideo.constants import NEGATIVE_PROMPT
 
+```python
+# This function creates the Gradio web demo for video generation
+```
 def initialize_model(model_path):
     args = parse_args()
     models_root_path = Path(model_path)
