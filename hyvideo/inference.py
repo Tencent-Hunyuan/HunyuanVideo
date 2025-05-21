@@ -158,8 +158,6 @@ class Inference(object):
             assert xfuser is not None, \
                 "Ulysses Attention and Ring Attention requires xfuser package."
 
-            assert args.use_cpu_offload is False, \
-                "Cannot enable use_cpu_offload in the distributed environment."
 
             dist.init_process_group("nccl")
 
@@ -441,7 +439,7 @@ class HunyuanVideoSampler(Inference):
             args=args,
         )
         if self.use_cpu_offload:
-            pipeline.enable_sequential_cpu_offload()
+            pipeline.enable_sequential_cpu_offload(device=device)
         else:
             pipeline = pipeline.to(device)
 
