@@ -339,6 +339,36 @@ python3 gradio_server.py --flow-reverse
 # SERVER_NAME=0.0.0.0 SERVER_PORT=8081 python3 gradio_server.py --flow-reverse
 ```
 
+
+### Running on Google Colab
+To run the Gradio Server on Google Colab, follow the steps described in the Download Pretrained Models section first, and then use the following commands:
+
+```bash
+# clone
+!git clone https://github.com/tencent/HunyuanVideo.git
+%cd HunyuanVideo
+
+# setup
+!python -m pip install "huggingface_hub[cli]"
+!huggingface-cli download tencent/HunyuanVideo --local-dir ./ckpts
+!huggingface-cli download xtuner/llava-llama-3-8b-v1_1-transformers --local-dir ./ckpts/llava-llama-3-8b-v1_1-transformers
+!python hyvideo/utils/preprocess_text_encoder_tokenizer_utils.py --input_dir ckpts/llava-llama-3-8b-v1_1-transformers --output_dir ckpts/text_encoder
+!huggingface-cli download openai/clip-vit-large-patch14 --local-dir ./ckpts/text_encoder_2
+!pip install -r requirements.txt
+!python -m pip install ninja
+# Download and install pre-built flash-attention binaries
+# For details, see: https://github.com/kun432/flash-attention-prebuild-wheels
+!wget https://github.com/kun432/flash-attention-prebuild-wheels/releases/download/v0.0.0-test/flash_attn-2.6.3+cu121torch2.5-cp310-cp310-linux_x86_64.whl
+!pip install --no-dependencies --upgrade flash_attn-2.6.3+cu121torch2.5-cp310-cp310-linux_x86_64.whl
+!pip install gradio
+!pip install loguru
+
+# start
+!python3 gradio_server.py --flow-reverse --share
+```
+
+This will provide you with a shareable link to the Gradio interface for generating videos from text prompts in the Colab environment.
+
 ### More Configurations
 
 We list some more useful configurations for easy usage:
