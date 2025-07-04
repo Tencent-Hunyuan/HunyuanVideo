@@ -84,6 +84,7 @@
 - Sparse-VideoGen (基于高像素级保真度的视频加速生成): [Sparse-VideoGen](https://github.com/svg-project/Sparse-VideoGen) by [University of California, Berkeley](https://svg-project.github.io/)
 - FramePack (将输入帧上下文打包到下一帧预测模型中用于视频生成): [FramePack](https://github.com/lllyasviel/FramePack) by [Lvmin Zhang](https://github.com/lllyasviel)
 - Jenga (加速采样): [Jenga](https://github.com/dvlab-research/Jenga) by [DV Lab](https://github.com/dvlab-research)
+- EasyCache (自适应特征复用): [EasyCache](https://github.com/H-EmbodVis/EasyCache) by [Dingkang Liang](https://github.com/dk-liang) and [Xin Zhou](https://github.com/LMD0311)
 
 
 
