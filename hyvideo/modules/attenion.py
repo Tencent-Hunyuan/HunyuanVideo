@@ -14,6 +14,11 @@ except ImportError:
     flash_attn_varlen_func = None
     _flash_attn_forward = None
 
+try:
+    import torch_musa
+except ModuleNotFoundError:
+    torch_musa = None
+
 
 MEMORY_LAYOUT = {
     "flash": (
@@ -98,7 +103,7 @@ def attention(
     k = pre_attn_layout(k)
     v = pre_attn_layout(v)
 
-    if mode == "torch":
+    if mode == "torch" or torch_musa is not None:
         if attn_mask is not None and attn_mask.dtype != torch.bool:
             attn_mask = attn_mask.to(q.dtype)
         x = F.scaled_dot_product_attention(
@@ -178,7 +183,16 @@ def parallel_attention(
         joint_tensor_value=v[:,img_kv_len:cu_seqlens_kv[1]],
         joint_strategy="rear",
     )
-    if flash_attn.__version__ >= '2.7.0':
+    if torch_musa is not None:
+            attn2 = F.scaled_dot_product_attention(
+            q[:,cu_seqlens_q[1]:],
+            k[:,cu_seqlens_kv[1]:],
+            v[:,cu_seqlens_kv[1]:],
+            attn_mask=None,
+            dropout_p=0,
+            is_causal=False
+        )
+    elif flash_attn.__version__ >= '2.7.0':
         attn2, *_ = _flash_attn_forward(
             q[:,cu_seqlens_q[1]:],
             k[:,cu_seqlens_kv[1]:],

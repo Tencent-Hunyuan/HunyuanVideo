@@ -85,7 +85,11 @@ def parallelize_transformer(pipe):
         from xfuser.core.long_ctx_attention import xFuserLongContextAttention
         
         for block in transformer.double_blocks + transformer.single_blocks:
-            block.hybrid_seq_parallel_attn = xFuserLongContextAttention()
+            from yunchang.kernels import AttnType
+            if torch_musa is not None:
+                block.hybrid_seq_parallel_attn = xFuserLongContextAttention(attn_type=AttnType.TORCH)
+            else:
+                block.hybrid_seq_parallel_attn = xFuserLongContextAttention()
 
         output = original_forward(
             x,
