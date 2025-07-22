@@ -20,6 +20,11 @@ from hyvideo.diffusion.schedulers import FlowMatchDiscreteScheduler
 from hyvideo.diffusion.pipelines import HunyuanVideoPipeline
 
 try:
+    import torch_musa
+except:
+    torch_musa = None
+
+try:
     import xfuser
     from xfuser.core.distributed import (
         get_sequence_parallel_world_size,
@@ -130,13 +135,15 @@ class Inference(object):
         self.use_cpu_offload = use_cpu_offload
 
         self.args = args
-        self.device = (
-            device
-            if device is not None
-            else "cuda"
-            if torch.cuda.is_available()
-            else "cpu"
-        )
+        if device is not None:
+            self.device = device
+        else:
+            if torch.cuda.is_available():
+                self.device = "cuda"
+            elif torch_musa is not None:
+                self.device = "musa"
+            else:
+                self.device = "cpu"
         self.logger = logger
         self.parallel_args = parallel_args
 
@@ -161,7 +168,12 @@ class Inference(object):
             assert args.use_cpu_offload is False, \
                 "Cannot enable use_cpu_offload in the distributed environment."
 
-            dist.init_process_group("nccl")
+            if torch_musa is not None:
+                dist_ccl = "mccl"
+            else:
+                dist_ccl = "nccl"
+
+            dist.init_process_group(dist_ccl)
 
             assert dist.get_world_size() == args.ring_degree * args.ulysses_degree, \
                 "number of GPUs should be equal to ring_degree * ulysses_degree."
@@ -173,10 +185,19 @@ class Inference(object):
                 ring_degree=args.ring_degree,
                 ulysses_degree=args.ulysses_degree,
             )
-            device = torch.device(f"cuda:{os.environ['LOCAL_RANK']}")
+            if torch_musa is not None:
+                device = "musa"
+            else:
+                device = "cuda"
+            device = torch.device(f"{device}:{os.environ['LOCAL_RANK']}")
         else:
             if device is None:
-                device = "cuda" if torch.cuda.is_available() else "cpu"
+                if torch.cuda.is_available():
+                    device = torch.device("cuda")
+                elif torch_musa is not None:
+                    device = torch.device("musa")
+                else:
+                    device = torch.device("cpu")
 
         parallel_args = {"ulysses_degree": args.ulysses_degree, "ring_degree": args.ring_degree}
 

@@ -48,6 +48,11 @@ from ...vae.autoencoder_kl_causal_3d import AutoencoderKLCausal3D
 from ...text_encoder import TextEncoder
 from ...modules import HYVideoDiffusionTransformer
 
+try:
+    import torch_musa
+except:
+    torch_musa = None
+
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 EXAMPLE_DOC_STRING = """"""
@@ -835,7 +840,15 @@ class HunyuanVideoPipeline(DiffusionPipeline):
         else:
             batch_size = prompt_embeds.shape[0]
 
-        device = torch.device(f"cuda:{dist.get_rank()}") if dist.is_initialized() else self._execution_device
+        if torch_musa is not None:
+            device_type = "musa"
+        else:
+            device_type = "cuda"
+
+        if dist.is_initialized():
+            device = torch.device(f"{device_type}:{dist.get_rank()}")
+        else:
+            device = self._execution_device
 
         # 3. Encode input prompt
         lora_scale = (
@@ -986,7 +999,7 @@ class HunyuanVideoPipeline(DiffusionPipeline):
 
                 # predict the noise residual
                 with torch.autocast(
-                    device_type="cuda", dtype=target_dtype, enabled=autocast_enabled
+                    device_type=device_type, dtype=target_dtype, enabled=autocast_enabled
                 ):
                     noise_pred = self.transformer(  # For an input image (129, 192, 336) (1, 256, 256)
                         latent_model_input,  # [2, 16, 33, 24, 42]
@@ -1069,7 +1082,7 @@ class HunyuanVideoPipeline(DiffusionPipeline):
                 latents = latents / self.vae.config.scaling_factor
 
             with torch.autocast(
-                device_type="cuda", dtype=vae_dtype, enabled=vae_autocast_enabled
+                device_type=device_type, dtype=vae_dtype, enabled=vae_autocast_enabled
             ):
                 if enable_tiling:
                     self.vae.enable_tiling()
