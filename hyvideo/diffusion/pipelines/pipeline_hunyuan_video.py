@@ -50,7 +50,7 @@ from ...modules import HYVideoDiffusionTransformer
 
 try:
     import torch_musa
-except:
+except ModuleNotFoundError:
     torch_musa = None
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name

@@ -21,7 +21,7 @@ from hyvideo.diffusion.pipelines import HunyuanVideoPipeline
 
 try:
     import torch_musa
-except:
+except ModuleNotFoundError:
     torch_musa = None
 
 try:
