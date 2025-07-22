@@ -98,12 +98,14 @@ def attention(
     Returns:
         torch.Tensor: Output tensor after self attention with shape [b, s, ad]
     """
+    if mode == "flash" and torch_musa is not None:
+        mode = "torch"
     pre_attn_layout, post_attn_layout = MEMORY_LAYOUT[mode]
     q = pre_attn_layout(q)
     k = pre_attn_layout(k)
     v = pre_attn_layout(v)
 
-    if mode == "torch" or torch_musa is not None:
+    if mode == "torch":
         if attn_mask is not None and attn_mask.dtype != torch.bool:
             attn_mask = attn_mask.to(q.dtype)
         x = F.scaled_dot_product_attention(
