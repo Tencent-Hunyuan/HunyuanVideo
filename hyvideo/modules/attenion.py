@@ -186,7 +186,7 @@ def parallel_attention(
         joint_strategy="rear",
     )
     if torch_musa is not None:
-            attn2 = F.scaled_dot_product_attention(
+        attn2 = F.scaled_dot_product_attention(
             q[:,cu_seqlens_q[1]:],
             k[:,cu_seqlens_kv[1]:],
             v[:,cu_seqlens_kv[1]:],
