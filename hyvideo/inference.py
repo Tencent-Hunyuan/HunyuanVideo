@@ -2,10 +2,8 @@ import os
 import time
 import random
 import functools
-import importlib.metadata
 from typing import List, Optional, Tuple, Union
 
-from packaging import version
 from pathlib import Path
 from loguru import logger
 
