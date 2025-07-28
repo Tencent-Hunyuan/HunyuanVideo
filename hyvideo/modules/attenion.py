@@ -98,7 +98,7 @@ def attention(
     Returns:
         torch.Tensor: Output tensor after self attention with shape [b, s, ad]
     """
-    if mode == "flash" and torch_musa is not None:
+    if torch_musa is not None and  mode == "flash":
         mode = "torch"
     pre_attn_layout, post_attn_layout = MEMORY_LAYOUT[mode]
     q = pre_attn_layout(q)

@@ -87,15 +87,8 @@ def parallelize_transformer(pipe):
         from xfuser.core.long_ctx_attention import xFuserLongContextAttention
         
         for block in transformer.double_blocks + transformer.single_blocks:
-            try:
-                lib_version = importlib.metadata.version("yunchang")
-            except:
-                lib_version = "0.0.0"
-            if version.parse(lib_version) >= version.parse("0.6.0"):
-                from yunchang.kernels import AttnType
-            else:
-                from yunchang.kernels import FlashAttentionImpl as AttnType
             if torch_musa is not None:
+                from yunchang.kernels import AttnType
                 block.hybrid_seq_parallel_attn = xFuserLongContextAttention(attn_type=AttnType.TORCH)
             else:
                 block.hybrid_seq_parallel_attn = xFuserLongContextAttention()
