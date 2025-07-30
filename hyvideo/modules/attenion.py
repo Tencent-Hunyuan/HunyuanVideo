@@ -16,7 +16,7 @@ except ImportError:
 
 try:
     import torch_musa
-except ModuleNotFoundError:
+except Exception:
     torch_musa = None
 
 
