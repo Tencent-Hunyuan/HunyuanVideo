@@ -1,6 +1,6 @@
 <!-- ## **HunyuanVideo** -->
 
-[中文阅读](./README_zh.md)
+[中文阅读](./top model with cloths leahters dress.md)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanVideo/refs/heads/main/assets/logo.png"  height=100>
