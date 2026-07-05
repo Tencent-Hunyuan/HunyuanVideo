@@ -14,6 +14,11 @@ except ImportError:
     flash_attn_varlen_func = None
     _flash_attn_forward = None
 
+try:
+    import torch_musa
+except Exception:
+    torch_musa = None
+
 
 MEMORY_LAYOUT = {
     "flash": (
@@ -45,7 +50,7 @@ def get_cu_seqlens(text_mask, img_len):
     text_len = text_mask.sum(dim=1)
     max_len = text_mask.shape[1] + img_len
 
-    cu_seqlens = torch.zeros([2 * batch_size + 1], dtype=torch.int32, device="cuda")
+    cu_seqlens = torch.zeros([2 * batch_size + 1], dtype=torch.int32, device=text_mask.device)
 
     for i in range(batch_size):
         s = text_len[i] + img_len
@@ -93,6 +98,8 @@ def attention(
     Returns:
         torch.Tensor: Output tensor after self attention with shape [b, s, ad]
     """
+    if torch_musa is not None and  mode == "flash":
+        mode = "torch"
     pre_attn_layout, post_attn_layout = MEMORY_LAYOUT[mode]
     q = pre_attn_layout(q)
     k = pre_attn_layout(k)
@@ -197,7 +204,16 @@ def parallel_attention(
         joint_tensor_value=v[:,img_kv_len:cu_seqlens_kv[1]],
         joint_strategy="rear",
     )
-    if flash_attn.__version__ >= '2.7.0':
+    if torch_musa is not None:
+        attn2 = F.scaled_dot_product_attention(
+            q[:,cu_seqlens_q[1]:],
+            k[:,cu_seqlens_kv[1]:],
+            v[:,cu_seqlens_kv[1]:],
+            attn_mask=None,
+            dropout_p=0,
+            is_causal=False
+        )
+    elif flash_attn.__version__ >= '2.7.0':
         attn2, *_ = _flash_attn_forward(
             q[:,cu_seqlens_q[1]:],
             k[:,cu_seqlens_kv[1]:],
