@@ -79,6 +79,7 @@ If you develop/use HunyuanVideo in your projects, welcome to let us know.
 - Jenga (Training-Free Efficient Video Generation via Dynamic Token Carving): [Jenga](https://github.com/dvlab-research/Jenga) by [DV Lab](https://github.com/dvlab-research)
 - DCM (Dual-Expert Consistency Model for Efficient and High-Quality Video Generation): [DCM](https://github.com/Vchitect/DCM) by [Vchitect](https://github.com/Vchitect/DCM)
 - NaviCache (Offline Calibration-free Cache-based Accelerate): [NaviCache](https://github.com/HelloZicky/NaviCache) by [Zhejiang University](https://arxiv.org/abs/2606.26795)
+- AIVideoAdherenceGate (Offline Post-Render Semantic + Motion Health Gate for AI Video): [AIVideoAdherenceGate](https://github.com/madebysaira/AIVideoAdherenceGate) by [madebysaira](https://github.com/madebysaira)
 
 
 ## 📑 Open-source Plan
