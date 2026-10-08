@@ -1,12 +1,11 @@
 import os
-import time
+from datetime import datetime
 from pathlib import Path
 from loguru import logger
-from datetime import datetime
 import gradio as gr
 import random
 
-from hyvideo.utils.file_utils import save_videos_grid
+from hyvideo.utils.file_utils import contained_file, save_videos_grid
 from hyvideo.config import parse_args
 from hyvideo.inference import HunyuanVideoSampler
 from hyvideo.constants import NEGATIVE_PROMPT
@@ -55,14 +54,13 @@ def generate_video(
     sample = samples[0].unsqueeze(0)
     
     save_path = os.path.join(os.getcwd(), "gradio_outputs")
-    os.makedirs(save_path, exist_ok=True)
-    
-    time_flag = datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d-%H:%M:%S")
-    video_path = f"{save_path}/{time_flag}_seed{outputs['seeds'][0]}_{outputs['prompts'][0][:100].replace('/','')}.mp4"
+    time_flag = datetime.now().strftime("%Y-%m-%d-%H%M%S")
+    filename = f"{time_flag}_seed{outputs['seeds'][0]}_{outputs['prompts'][0][:100]}.mp4"
+    video_path = contained_file(save_path, filename)
     save_videos_grid(sample, video_path, fps=24)
-    logger.info(f'Sample saved to: {video_path}')
-    
-    return video_path
+    logger.info(f"Sample saved to: {video_path}")
+
+    return str(video_path)
 
 def create_demo(model_path, save_path):
     model = initialize_model(model_path)

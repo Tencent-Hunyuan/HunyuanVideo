@@ -1,5 +1,5 @@
-import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
+
 from einops import rearrange
 
 import torch
@@ -13,6 +13,22 @@ CODE_SUFFIXES = {
     ".yaml",
     ".yml",  # Configuration files
 }
+
+def contained_file(directory, filename: str) -> Path:
+    """Join a filename under directory, ignoring any directory part in the name.
+
+    PureWindowsPath.name treats both '/' and '\\' as separators, so a prompt
+    such as '..\\\\..\\\\evil' cannot escape on Windows or POSIX. resolve()
+    then relative_to() rejects symlink escapes.
+    """
+    root = Path(directory).expanduser().resolve()
+    root.mkdir(parents=True, exist_ok=True)
+    leaf = PureWindowsPath(str(filename)).name
+    if leaf in {"", ".", ".."}:
+        raise ValueError(f"Refusing unsafe filename: {filename}")
+    path = (root / leaf).resolve()
+    path.relative_to(root)
+    return path
 
 
 def safe_dir(path):
@@ -50,7 +66,7 @@ def save_videos_grid(videos: torch.Tensor, path: str, rescale=False, n_rows=1, f
 
     Args:
         videos (torch.Tensor): video tensor predicted by the model
-        path (str): path to save video
+        path (str): path to save video. Parent directory must already exist.
         rescale (bool, optional): rescale the video tensor from [-1, 1] to  . Defaults to False.
         n_rows (int, optional): Defaults to 1.
         fps (int, optional): video save fps. Defaults to 8.
@@ -66,5 +82,4 @@ def save_videos_grid(videos: torch.Tensor, path: str, rescale=False, n_rows=1, f
         x = (x * 255).numpy().astype(np.uint8)
         outputs.append(x)
 
-    os.makedirs(os.path.dirname(path), exist_ok=True)
     imageio.mimsave(path, outputs, fps=fps)
