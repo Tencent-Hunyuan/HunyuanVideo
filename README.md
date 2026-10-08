@@ -247,7 +247,7 @@ cd HunyuanVideo
 
 ### Installation Guide for Linux
 
-We recommend CUDA versions 12.4 or 11.8 for the manual installation.
+We recommend CUDA versions 12.6 or 11.8 for the manual installation.
 
 Conda's installation instructions are available [here](https://docs.anaconda.com/free/miniconda/index.html).
 
@@ -258,20 +258,20 @@ conda create -n HunyuanVideo python==3.10.9
 # 2. Activate the environment
 conda activate HunyuanVideo
 
-# 3. Install PyTorch and other dependencies using conda
+# 3. Install PyTorch
 # For CUDA 11.8
-conda install pytorch==2.6.0 torchvision==0.19.0 torchaudio==2.4.0 pytorch-cuda=11.8 -c pytorch -c nvidia
-# For CUDA 12.4
-conda install pytorch==2.6.0 torchvision==0.19.0 torchaudio==2.4.0 pytorch-cuda=12.4 -c pytorch -c nvidia
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
+# For CUDA 12.6
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu126
 
 # 4. Install pip dependencies
 python -m pip install -r requirements.txt
 
 # 5. Install flash attention v2 for acceleration (requires CUDA 11.8 or above)
 python -m pip install ninja
-python -m pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.3
+python -m pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.8.3
 
-# 6. Install xDiT for parallel inference (It is recommended to use torch 2.6.0 and flash-attn 2.6.3)
+# 6. Install xDiT for parallel inference (It is recommended to use torch 2.7.1 and flash-attn 2.8.3)
 python -m pip install xfuser==0.4.0
 ```
 
@@ -285,10 +285,10 @@ export LD_LIBRARY_PATH=/opt/conda/lib/python3.8/site-packages/nvidia/cublas/lib/
 # Option 2: Forcing to explictly use the CUDA 11.8 compiled version of Pytorch and all the other packages
 pip uninstall -r requirements.txt  # uninstall all packages
 pip uninstall -y xfuser
-pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu118
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
 pip install -r requirements.txt
 pip install ninja
-pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.3
+pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.8.3
 pip install xfuser==0.4.0
 ```
 

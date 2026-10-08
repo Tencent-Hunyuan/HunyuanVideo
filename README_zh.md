@@ -252,7 +252,7 @@ cd HunyuanVideo
 
 ### Linux 安装指引
 
-我们推荐使用 CUDA 12.4 或 11.8 的版本。
+我们推荐使用 CUDA 12.6 或 11.8 的版本。
 
 Conda 的安装指南可以参考[这里](https://docs.anaconda.com/free/miniconda/index.html)。
 
@@ -263,20 +263,20 @@ conda create -n HunyuanVideo python==3.10.9
 # 2. Activate the environment
 conda activate HunyuanVideo
 
-# 3. Install PyTorch and other dependencies using conda
+# 3. Install PyTorch
 # For CUDA 11.8
-conda install pytorch==2.6.0 torchvision==0.19.0 torchaudio==2.4.0 pytorch-cuda=11.8 -c pytorch -c nvidia
-# For CUDA 12.4
-conda install pytorch==2.6.0 torchvision==0.19.0 torchaudio==2.4.0 pytorch-cuda=12.4 -c pytorch -c nvidia
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
+# For CUDA 12.6
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu126
 
 # 4. Install pip dependencies
 python -m pip install -r requirements.txt
 
 # 5. Install flash attention v2 for acceleration (requires CUDA 11.8 or above)
 python -m pip install ninja
-python -m pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.3
+python -m pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.8.3
 
-# 6. Install xDiT for parallel inference (It is recommended to use torch 2.6.0 and flash-attn 2.6.3)
+# 6. Install xDiT for parallel inference (It is recommended to use torch 2.7.1 and flash-attn 2.8.3)
 python -m pip install xfuser==0.4.0
 ```
 
@@ -290,10 +290,10 @@ export LD_LIBRARY_PATH=/opt/conda/lib/python3.8/site-packages/nvidia/cublas/lib/
 #选项2：强制显式使用 CUDA11.8 编译的 Pytorch 版本以及其他所有软件包
 pip uninstall -r requirements.txt  # 确保卸载所有依赖包
 pip uninstall -y xfuser
-pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu118
+pip install torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 --index-url https://download.pytorch.org/whl/cu118
 pip install -r requirements.txt
 pip install ninja
-pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.3
+pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.8.3
 pip install xfuser==0.4.0
 ```
 
