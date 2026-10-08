@@ -338,7 +338,11 @@ class Inference(object):
         if not model_path.exists():
             raise ValueError(f"model_path not exists: {model_path}")
         logger.info(f"Loading torch model {model_path}...")
-        state_dict = torch.load(model_path, map_location=lambda storage, loc: storage)
+        state_dict = torch.load(
+            model_path,
+            map_location=lambda storage, loc: storage,
+            weights_only=True,
+        )
 
         if bare_model == "unknown" and ("ema" in state_dict or "module" in state_dict):
             bare_model = False
