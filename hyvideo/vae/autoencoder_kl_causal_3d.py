@@ -41,6 +41,7 @@ from diffusers.models.attention_processor import (
 )
 from diffusers.models.modeling_outputs import AutoencoderKLOutput
 from diffusers.models.modeling_utils import ModelMixin
+from .temporal_tile import iter_temporal_tile_ranges
 from .vae import DecoderCausal3D, BaseOutput, DecoderOutput, DiagonalGaussianDistribution, EncoderCausal3D
 
 
@@ -468,11 +469,13 @@ class AutoencoderKLCausal3D(ModelMixin, ConfigMixin, FromOriginalVAEMixin):
         overlap_size = int(self.tile_sample_min_tsize * (1 - self.tile_overlap_factor))
         blend_extent = int(self.tile_latent_min_tsize * self.tile_overlap_factor)
         t_limit = self.tile_latent_min_tsize - blend_extent
+        expected_latents = (T - 1) // self.time_compression_ratio + 1
 
         # Split the video into tiles and encode them separately.
         row = []
-        for i in range(0, T, overlap_size):
-            tile = x[:, :, i: i + self.tile_sample_min_tsize + 1, :, :]
+        tile_ranges = iter_temporal_tile_ranges(T, overlap_size, self.tile_sample_min_tsize + 1)
+        for i, (start, end) in enumerate(tile_ranges):
+            tile = x[:, :, start:end, :, :]
             if self.use_spatial_tiling and (tile.shape[-1] > self.tile_sample_min_size or tile.shape[-2] > self.tile_sample_min_size):
                 tile = self.spatial_tiled_encode(tile, return_moments=True)
             else:
@@ -480,16 +483,21 @@ class AutoencoderKLCausal3D(ModelMixin, ConfigMixin, FromOriginalVAEMixin):
                 tile = self.quant_conv(tile)
             if i > 0:
                 tile = tile[:, :, 1:, :, :]
+            if tile.shape[2] == 0:
+                continue
             row.append(tile)
         result_row = []
+        last = len(row) - 1
         for i, tile in enumerate(row):
             if i > 0:
                 tile = self.blend_t(row[i - 1], tile, blend_extent)
-                result_row.append(tile[:, :, :t_limit, :, :])
+                keep = tile.shape[2] if i == last else t_limit
+                result_row.append(tile[:, :, :keep, :, :])
             else:
-                result_row.append(tile[:, :, :t_limit + 1, :, :])
+                keep = tile.shape[2] if last == 0 else t_limit + 1
+                result_row.append(tile[:, :, :keep, :, :])
 
-        moments = torch.cat(result_row, dim=2)
+        moments = torch.cat(result_row, dim=2)[:, :, :expected_latents]
         posterior = DiagonalGaussianDistribution(moments)
 
         if not return_dict:
@@ -504,10 +512,12 @@ class AutoencoderKLCausal3D(ModelMixin, ConfigMixin, FromOriginalVAEMixin):
         overlap_size = int(self.tile_latent_min_tsize * (1 - self.tile_overlap_factor))
         blend_extent = int(self.tile_sample_min_tsize * self.tile_overlap_factor)
         t_limit = self.tile_sample_min_tsize - blend_extent
+        expected_frames = (T - 1) * self.time_compression_ratio + 1
 
         row = []
-        for i in range(0, T, overlap_size):
-            tile = z[:, :, i: i + self.tile_latent_min_tsize + 1, :, :]
+        tile_ranges = iter_temporal_tile_ranges(T, overlap_size, self.tile_latent_min_tsize + 1)
+        for i, (start, end) in enumerate(tile_ranges):
+            tile = z[:, :, start:end, :, :]
             if self.use_spatial_tiling and (tile.shape[-1] > self.tile_latent_min_size or tile.shape[-2] > self.tile_latent_min_size):
                 decoded = self.spatial_tiled_decode(tile, return_dict=True).sample
             else:
@@ -515,16 +525,21 @@ class AutoencoderKLCausal3D(ModelMixin, ConfigMixin, FromOriginalVAEMixin):
                 decoded = self.decoder(tile)
             if i > 0:
                 decoded = decoded[:, :, 1:, :, :]
+            if decoded.shape[2] == 0:
+                continue
             row.append(decoded)
         result_row = []
+        last = len(row) - 1
         for i, tile in enumerate(row):
             if i > 0:
                 tile = self.blend_t(row[i - 1], tile, blend_extent)
-                result_row.append(tile[:, :, :t_limit, :, :])
+                keep = tile.shape[2] if i == last else t_limit
+                result_row.append(tile[:, :, :keep, :, :])
             else:
-                result_row.append(tile[:, :, :t_limit + 1, :, :])
+                keep = tile.shape[2] if last == 0 else t_limit + 1
+                result_row.append(tile[:, :, :keep, :, :])
 
-        dec = torch.cat(result_row, dim=2)
+        dec = torch.cat(result_row, dim=2)[:, :, :expected_frames]
         if not return_dict:
             return (dec,)
 
