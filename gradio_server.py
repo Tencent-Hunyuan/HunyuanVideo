@@ -4,6 +4,7 @@ from pathlib import Path
 from loguru import logger
 import gradio as gr
 import random
+import sys
 
 from hyvideo.utils.file_utils import contained_file, save_videos_grid
 from hyvideo.config import parse_args
@@ -133,7 +134,16 @@ if __name__ == "__main__":
     os.environ["GRADIO_ANALYTICS_ENABLED"] = "False"
     server_name = os.getenv("SERVER_NAME", "0.0.0.0")
     server_port = int(os.getenv("SERVER_PORT", "8081"))
+
+    # Check if --share is specified in command line arguments without changing hyvideo/config.py
+    if "--share" in sys.argv:
+        sys.argv.remove("--share")
+        share_flag = True
+    else:
+        share_flag = False
+
     args = parse_args()
     print(args)
+
     demo = create_demo(args.model_base, args.save_path)
-    demo.launch(server_name=server_name, server_port=server_port)
+    demo.launch(server_name=server_name, server_port=server_port, share=share_flag)
