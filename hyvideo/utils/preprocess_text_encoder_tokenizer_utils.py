@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 import torch
 from transformers import (
     AutoProcessor,
@@ -41,6 +42,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if len(args.output_dir) == 0:
-        args.output_dir = "/".join(args.input_dir.split("/")[:-1])
+        args.output_dir = str(Path(args.input_dir).parent)
 
     preprocess_text_encoder_tokenizer(args)
